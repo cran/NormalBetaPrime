@@ -1,0 +1,17 @@
+# Exports
+
+export(dl.normalmeans)
+export(hsplus.normalmeans)
+export(nbp)
+export(nbp.normalmeans)
+
+# Imports
+
+importFrom("Matrix", "chol", "chol2inv")
+importFrom("stats", "coef", "var", "median", "quantile", "rgamma", "rnorm", "runif", "uniroot", "optimize")
+importFrom("utils", "tail")
+importFrom("MASS", "mvrnorm")
+importFrom("glmnet", "glmnet", "cv.glmnet")
+importFrom("pracma", "quadinf")
+importFrom("GIGrvg", "rgig")
+importFrom("pscl", "rigamma")
