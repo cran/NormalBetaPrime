@@ -59,14 +59,6 @@ nbp.normalmeans = function(x, a=1/2+1/length(x), b.est=c("fixed", "est.sparsity"
   #####################################
   n <- length(x)
 
-  #######################################################
-  # Make sure that the default selection method is the  #
-  # thresholding method.                                #
-  #######################################################
-  if((var.select != "threshold") & (var.select != "intervals")){
-      stop("Please enter either 'threshold' or 'intervals' for selection.")
-   }
-  
 	############################
 	# For the hyperparameter a #
 	############################
@@ -124,8 +116,9 @@ nbp.normalmeans = function(x, a=1/2+1/length(x), b.est=c("fixed", "est.sparsity"
 		###########
 		# Counter #
 		###########
-		if (j %% 1000 == 0) 
+		if (j %% 1000 == 0) {
 		   cat("Iteration:", j, "\n")
+		}
 		
 		####################
 		# Sample theta_i's #
@@ -144,7 +137,7 @@ nbp.normalmeans = function(x, a=1/2+1/length(x), b.est=c("fixed", "est.sparsity"
 	  # Rate and scale parameters for lambda_i's
 	  alpha <- a + 1/2
 	  beta <- theta^2/(2*sigma2*xi)+1 #nx1 vector
-	  beta[beta < .Machine$double.eps] <- .Machine$double.eps # For numerical stability
+	  beta <- pmax(beta, .Machine$double.eps) # For numerical stability
 	  
 	  # Update the lambda_i's as a block
 	  ig.sample <- function(x){
@@ -155,7 +148,7 @@ nbp.normalmeans = function(x, a=1/2+1/length(x), b.est=c("fixed", "est.sparsity"
 	  # Parameters for xi_i's
     u <- b - 1/2
     v <- theta^2/(sigma2*lambda) #nx1 vector
-    v[v < .Machine$double.eps] <- .Machine$double.eps # For numerical stability
+    v <- pmax(v, .Machine$double.eps) # For numerical stability
 	  w <- 2
 	  
 	  # Update the xi_i's as a block
@@ -172,7 +165,7 @@ nbp.normalmeans = function(x, a=1/2+1/length(x), b.est=c("fixed", "est.sparsity"
 	  kappa.samples[[j]] <- kappa
 
   }
-	
+
 	###################
 	# Discard burn-in #
 	################### 

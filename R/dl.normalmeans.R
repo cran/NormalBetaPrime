@@ -134,7 +134,7 @@ dl.normalmeans = function(x, a.est=c("fixed", "est.sparsity", "reml"), a=1/lengt
 	  ##################
 	  u <- 1/2
 	  v <- (1/(sigma2*tau^2))*(theta^2/phi^2) # nx1 vector
-	  v[v < .Machine$double.eps] <- .Machine$double.eps # For numerical stability
+	  v <- pmax(v, .Machine$double.eps) # For numerical stability
 	  w <- 1
 	  
 	  # Update psi's as a block
@@ -147,7 +147,7 @@ dl.normalmeans = function(x, a.est=c("fixed", "est.sparsity", "reml"), a=1/lengt
 	  # Sample  auxiliary T_i's
 	  u <- a-1
 	  v <- (2/sqrt(sigma2))*abs(theta) #nx1 vector
-	  v[v < .Machine$double.eps] <- .Machine$double.eps # For numerical stability
+	  v <- pmax(v, .Machine$double.eps) # For numerical stability
 	  w <- 1
 	  # Update auxiliary T_i's as a block
 	  aux.t <- sapply(v, gig.sample)

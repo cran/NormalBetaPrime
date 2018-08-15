@@ -120,7 +120,7 @@ data(singh2002)
 attach(singh2002)
 
 # First 50 rows are the cancer patients,
-# and the last 52 rows are the control subjects.d
+# and the last 52 rows are the control subjects.
 
 prostate.data <- singh2002$x
 

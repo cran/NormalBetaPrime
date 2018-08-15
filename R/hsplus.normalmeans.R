@@ -130,7 +130,7 @@ hsplus.normalmeans = function(x, tau.est=c("fixed", "est.sparsity", "reml"), tau
     # Sample lambda_i's #
     #####################
     beta <- 1/nu + (theta^2)/(2*tau*sigma2) # nx1 vector
-    beta[beta < .Machine$double.eps] <- .Machine$double.eps # For numerical stability
+    beta <- pmax(beta, .Machine$double.eps) # For numerical stability
     # Update the lambda_i's as a block
     lambda2 <- sapply(beta, ig.sample)
     
@@ -138,7 +138,7 @@ hsplus.normalmeans = function(x, tau.est=c("fixed", "est.sparsity", "reml"), tau
     # Sample nu_i's #
     #################
     beta <- 1/eta2 + 1/lambda2 # nx1 vector
-    beta[beta < .Machine$double.eps] <- .Machine$double.eps # For numerical stability
+    beta <- pmax(beta, .Machine$double.eps) # For numerical stability
     # Update the nu_i's as a block
     nu <- sapply(beta, ig.sample)
     
@@ -152,7 +152,7 @@ hsplus.normalmeans = function(x, tau.est=c("fixed", "est.sparsity", "reml"), tau
     # Sample eta2_i's #
     ###################
     beta <- 1/nu + 1/phi # nx1 vector
-    beta[beta < .Machine$double.eps] <- .Machine$double.eps # For numerical stability
+    beta <- pmax(beta, .Machine$double.eps) # For numerical stability
     # Update the eta2_i's as a block
     eta2 <- sapply(beta, ig.sample)
     
@@ -160,7 +160,7 @@ hsplus.normalmeans = function(x, tau.est=c("fixed", "est.sparsity", "reml"), tau
     # Sample phi_i's #
     ##################
     beta <- 1+1/eta2 #nx1 vector
-    beta[beta < .Machine$double.eps] <- .Machine$double.eps # For numerical stability
+    beta <- pmax(beta, .Machine$double.eps) # For numerical stability
     # Update the phi_i's as a block
     phi <- sapply(beta, ig.sample)
     

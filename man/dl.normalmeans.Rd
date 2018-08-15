@@ -98,7 +98,7 @@ X <- theta.true + rnorm(n,0,1)
 #########################
 # For optimal performance, should set max.steps=10,000 and burnin=5000.
 
-# Estimate b from empirical Bayes estimate of sparsity level
+# Estimate b from the empirical Bayes estimate of sparsity level
 dl.model <- dl.normalmeans(X, a.est="est.sparsity", sigma2=1, var.select="threshold", 
                           max.steps=1000, burnin=500)
 
@@ -122,7 +122,7 @@ data(singh2002)
 attach(singh2002)
 
 # First 50 rows are the cancer patients,
-# and the last 52 rows are the control subjects.d
+# and the last 52 rows are the control subjects.
 
 prostate.data <- singh2002$x
 

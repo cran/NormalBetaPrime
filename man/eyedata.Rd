@@ -9,12 +9,12 @@
 \format{
 This data is a list that consists of the following:
 \describe{
-    \item{\code{x}:}{is a design matrix with 120 rows and 200 columns.}
-    \item{\code{y}:}{is a numeric vector with 120 samples of gene expression levels of the TRIM32 gene.}
+    \item{\code{genes}:}{is a design matrix with 120 rows and 200 columns.}
+    \item{\code{trim32}:}{is a numeric vector with 120 samples of gene expression levels of the TRIM32 gene.}
   }
 }
 
-\details{The data set contains gene expression data (200 genes for 120 samples) and gene expression levels of TRIM32 from the microarray experiments of mammalianeye tissue samples of Scheetz et al. (2006).
+\details{The data set contains gene expression data (200 genes for 120 samples) and gene expression levels of TRIM32 from the microarray experiments of mammalian eye tissue samples of Scheetz et al. (2006).
 }
 \source{ 
 https://cran.r-project.org/web/packages/flare/

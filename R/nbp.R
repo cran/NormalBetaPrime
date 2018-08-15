@@ -166,7 +166,6 @@ nbp = function(X, y, method.hyperparameters=c("mml", "fixed"), a=0.5, b=0.5,
 		# Shape and scale for lambda_i's
 		ig.shape <- a + 1/2
 		ig.scale <- (beta^2/(2*sigma2*xi))+1 # Scale parameters for i=1,..., p.
-		# For numerical stability
 		
 		# Parameters for xi_i's
 		u <- b - 1/2
@@ -184,11 +183,11 @@ nbp = function(X, y, method.hyperparameters=c("mml", "fixed"), a=0.5, b=0.5,
 		# Update the xi_i's as a block
 		v <- beta^2/(sigma2*lambda)   # chi parameter for i=1, ..., p.
 		# For numerical stability
-		v[v < 1e-10] <- 1e-10 # For numerical stability
+		v <- pmax(v, 1e-10) # For numerical stability
 		
 		gig.sample <- function(x){
 		    rgig(1, lambda=u, chi=x, psi=w)
-		}
+    }
 		xi <- sapply(v, gig.sample)
 		
 		# Store the xi samples
@@ -344,4 +343,3 @@ nbp = function(X, y, method.hyperparameters=c("mml", "fixed"), a=0.5, b=0.5,
   # Return list
 	return(nbp.output)
 }
-
