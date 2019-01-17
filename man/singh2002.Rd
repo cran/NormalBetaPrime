@@ -22,5 +22,5 @@ The data is described in Singh et al. (2001) and are provided in exactly the for
 \references{
 Singh, D., Febbo, P.G., Ross, K., Jackson, D.G., Maonla, J., Ladd, C., Tamayo, P., Renshaw, A.A., D'Amico, A.V., Richie, J.P., Lander, E.S., Loda, M., Kantoff, P.W., Golub, T.R., and Sellers, W.R. (2002). "Gene expression correlates of clinical prostate cancer behavior." \emph{Cancer Cell}, \bold{1}(2):203-209.
 
-Efron, B. (2010). "The Future of Indirect Evidence." \emph{Statistical Science}, \bold{25}(2):145-157.
+Efron, B. (2010). "The future of indirect evidence." \emph{Statistical Science}, \bold{25}(2):145-157.
 }

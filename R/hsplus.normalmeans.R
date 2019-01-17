@@ -35,13 +35,14 @@
 ##################
 # theta.hat = posterior mean estimate for theta
 # theta.med = posterior median estimate for theta
+# theta.var = posterior variance estimate for theta
 # theta.intervals = 95% posterior credible intervals for each component
 # theta.classifications = binary vector of classifications, according to 
 #                         classification method chosen by user
 # tau.est = empirical Bayes estimate of the global parameter tau
 
-hsplus.normalmeans = function(x, tau.est=c("fixed", "est.sparsity", "reml"), tau=1, 
-                              sigma2=1, var.select=c("threshold", "intervals"), 
+hsplus.normalmeans = function(x, tau.est=c("fixed", "est.sparsity", "reml", "uniform", "truncatedCauchy"), 
+                              tau=1/length(x), sigma2=1, var.select=c("threshold", "intervals"), 
                               max.steps = 10000, burnin=5000){
   
   #####################################
@@ -57,20 +58,20 @@ hsplus.normalmeans = function(x, tau.est=c("fixed", "est.sparsity", "reml"), tau
   # Number of samples in noisy vector #
   #####################################
   n <- length(x)
-
+  
   ##############################
   # For the hyperparameter tau #
   ##############################
   
   if( tau.est=="fixed" )             # If 'fixed' method is used.
     tau <- tau
-    
+  
   if( tau.est=="est.sparsity" )      # if 'est.sparsity' method is used.
     tau <- est.sparsity(x, sigma2)
-    
+  
   if( tau.est=="reml" )              # If 'reml' method is used.
     tau <- hsplus.MMLE(x, sigma2)
-    
+  
   # If user specified a different 'tau,' it must be greater than 0.
   if ( tau <= 0 )
     stop("ERROR: tau should be positive. \n")
@@ -78,6 +79,19 @@ hsplus.normalmeans = function(x, tau.est=c("fixed", "est.sparsity", "reml"), tau
   # Check that sigma2 is greater than 0.
   if (sigma2 <=0 )
     stop("ERROR: sigma2 should be greater than 0. \n")
+  
+  if ( tau.est=="uniform" ){              # if 'uniform' method is used.
+    tau <- 1/n                      # starting value of the random walk
+    tau.samples <- rep(NA, max.steps)     # Create a vector for samples of 'a'
+    tau.samples[1] <- tau
+  }
+  
+  
+  if ( tau.est=="truncatedCauchy" ){      # if 'truncatedCauchy' method is used.
+    tau <- 1/n                      # starting value of the random walk
+    tau.samples <- rep(NA, max.steps)     # Create a vector for samples of 'a'
+    tau.samples[1] <- tau
+  }
   
   #######################################
   # Initial guesses for hyperparameters #
@@ -125,22 +139,23 @@ hsplus.normalmeans = function(x, tau.est=c("fixed", "est.sparsity", "reml"), tau
     ig.sample <- function(x){
       rigamma(1, alpha, x)
     } 
+    ig.sample.vec <- Vectorize(ig.sample) # handles a vector as input
     
     #####################
     # Sample lambda_i's #
     #####################
     beta <- 1/nu + (theta^2)/(2*tau*sigma2) # nx1 vector
-    beta <- pmax(beta, .Machine$double.eps) # For numerical stability
+    beta <- pmax(beta, 1e-10) # For numerical stability
     # Update the lambda_i's as a block
-    lambda2 <- sapply(beta, ig.sample)
+    lambda2 <- ig.sample.vec(beta)
     
     #################
     # Sample nu_i's #
     #################
     beta <- 1/eta2 + 1/lambda2 # nx1 vector
-    beta <- pmax(beta, .Machine$double.eps) # For numerical stability
+    beta <- pmax(beta, 1e-10) # For numerical stability
     # Update the nu_i's as a block
-    nu <- sapply(beta, ig.sample)
+    nu <- ig.sample.vec(beta)
     
     #############
     # Sample xi #
@@ -152,17 +167,69 @@ hsplus.normalmeans = function(x, tau.est=c("fixed", "est.sparsity", "reml"), tau
     # Sample eta2_i's #
     ###################
     beta <- 1/nu + 1/phi # nx1 vector
-    beta <- pmax(beta, .Machine$double.eps) # For numerical stability
+    beta <- pmax(beta, 1e-10) # For numerical stability
     # Update the eta2_i's as a block
-    eta2 <- sapply(beta, ig.sample)
+    eta2 <- ig.sample.vec(beta)
     
     ##################
     # Sample phi_i's #
     ##################
     beta <- 1+1/eta2 #nx1 vector
-    beta <- pmax(beta, .Machine$double.eps) # For numerical stability
+    beta <- pmax(beta, 1e-10) # For numerical stability
     # Update the phi_i's as a block
-    phi <- sapply(beta, ig.sample)
+    phi <- ig.sample.vec(beta)
+    
+    # If 'uniform' was the method of 'tau.est'
+    if ( (tau.est == "uniform") & (j >= 2) ){
+      
+      # Draw from proposal density
+      prop.sd <- 0.1
+      tau.star <- rtruncnorm(1, a=1/n, b=1, mean=tau.samples[j-1], sd=prop.sd)
+      
+      # Ratio q(tau.star | tau)/q(tau | tau.star)
+      q.ratio <- ( pnorm((1-tau.samples[j-1])/prop.sd)-pnorm((1/n-tau.samples[j-1])/prop.sd) )/( pnorm((1-tau.star)/prop.sd)-pnorm((1/n-tau.star)/prop.sd) )
+      
+      # Ratio pi(a.star | rest)/pi(a | rest)
+      pi.ratio <- (tau.samples[j-1]/tau.star)^n * prod( (1+(lambda2/(eta2*tau^2)))/(1+(lambda2/(eta2*tau^2))) )
+      
+      # Acceptance probability
+      alpha <- min(1, q.ratio*pi.ratio)
+      
+      # Accept/reject algorithm
+      if ( runif(1,0,1) < alpha){
+        tau.samples[j] <- tau.star
+      } else {
+        tau.samples[j] <- tau.samples[j-1]
+      }
+      # Update tau
+      tau <- tau.samples[j]
+    }
+    
+    # If 'truncatedCauchy' was the method of 'tau.est'
+    if ( (tau.est == "truncatedCauchy") & (j >= 2) ){
+      
+      # Draw from proposal density
+      prop.sd <- 1e-2
+      tau.star <- rtruncnorm(1, a=1/n, b=1, mean=tau.samples[j-1], sd=prop.sd)
+      
+      # Ratio q(tau.star | tau)/q(tau | tau.star)
+      q.ratio <- ( pnorm((1-tau.samples[j-1])/prop.sd)-pnorm((1/n-tau.samples[j-1])/prop.sd) )/( pnorm((1-tau.star)/prop.sd)-pnorm((1/n-tau.star)/prop.sd) )
+      
+      # Ratio pi(a.star | rest)/pi(a | rest)
+      pi.ratio <- ( ((1+tau.samples[j-1])*tau.samples[j-1])/((1+tau.star)*tau.star) )^n * prod( (1+(lambda2/(eta2*tau^2)))/(1+(lambda2/(eta2*tau^2))) )
+      
+      # Acceptance probability
+      alpha <- min(1, q.ratio*pi.ratio)
+      
+      # Accept/reject algorithm
+      if ( runif(1,0,1) < alpha){
+        tau.samples[j] <- tau.star
+      } else {
+        tau.samples[j] <- tau.samples[j-1]
+      }
+      # Update tau
+      tau <- tau.samples[j]
+    }
     
   }
   
@@ -172,15 +239,25 @@ hsplus.normalmeans = function(x, tau.est=c("fixed", "est.sparsity", "reml"), tau
   theta.samples <- tail(theta.samples,max.steps-burnin)
   kappa.samples <- tail(kappa.samples,max.steps-burnin)  
   
+  # Return estimate of tau if fully Bayes method of estimating it.
+  if( (tau.est == "uniform") | (tau.est == "truncatedCauchy") ){
+    tau.samples <- tail(tau.samples,max.steps-burnin)
+    tau.param <- mean(tau.samples)
+  }
+  
   #######################################
   # Extract the posterior mean, median, #
   # 2.5th, and 97.5th percentiles       #
   #######################################
   theta.sample.mat <- simplify2array(theta.samples)
+  rm(theta.samples)
   # Posterior mean
   theta.hat <- rowMeans(theta.sample.mat)
   # Posterior median
-  theta.med <- apply(theta.sample.mat, 1, function(x) median(x))
+  theta.med <- apply(theta.sample.mat, 1, median)
+  # Posterior var
+  theta.sd <- apply(theta.sample.mat, 1, sd)
+  theta.var <- theta.sd^2
   # endpoints of 95% posterior credible intervals
   theta.intervals <- apply(theta.sample.mat, 1, function(x) quantile(x, prob=c(.025,.975)))
   
@@ -193,6 +270,7 @@ hsplus.normalmeans = function(x, tau.est=c("fixed", "est.sparsity", "reml"), tau
   if(var.select=="threshold"){
     # Estimate the shrinkage factor kappa_i's from the MCMC samples
     kappa.sample.mat <- simplify2array(kappa.samples)
+    rm(kappa.samples)
     kappa.estimates <- rowMeans(kappa.sample.mat)
     
     # Return indices of the signals according to our classification rule
@@ -217,16 +295,18 @@ hsplus.normalmeans = function(x, tau.est=c("fixed", "est.sparsity", "reml"), tau
   ########################################
   # Return list of theta.est, theta.med, #
   # lower.endpoints, upper.endpoints,    #
-  # and dl.classifications               #
+  # and hsplus.classifications           #
   ########################################
   # theta.hat = posterior mean point estimator
   # theta.med = posterior median point estimator
+  # theta.var = posterior variance estimate
   # theta.intervals = endpoints of 95% posterior credible intervals
   # hsplus.classifications = selected variables
   # tau.estimate = empirical Bayes estimate of global parameter tau
   
   hsplus.output <- list(theta.hat = theta.hat,
                         theta.med = theta.med,
+                        theta.var = theta.var,
                         theta.intervals = theta.intervals,
                         hsplus.classifications = hsplus.classifications,
                         tau.estimate = tau)
