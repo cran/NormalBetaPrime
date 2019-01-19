@@ -77,7 +77,6 @@ Ray Bai and Malay Ghosh
 }
 
 \examples{
-
 ###############################
 ## Example on diabetes data. ## 
 ###############################
@@ -103,19 +102,17 @@ nbp.model$nbp.classifications    # Variables selected
 \donttest{
 #
 #
-######################################################
-######################################################
-## TRIM32 gene expression data analysis.            ##
-## Running this code will allow you to reproduce    ##
-## the results in Section 6 of Bai and Ghosh (2018) ##
-######################################################
-######################################################
+####################################################
+# TRIM32 gene expression data analysis.            #
+# Running this code will allow you to reproduce    #
+# the results in Section 7 of Bai and Ghosh (2019) #
+####################################################
 
 # Load the data
 data(eyedata)
 
 # Set seed
-set.seed(123456)
+set.seed(1)
 
 # Center design matrix X and response vector y
 X <- scale(genes, center=TRUE, scale=TRUE) # gene expression data (covariates)
@@ -139,6 +136,7 @@ k <- 5  # Number of folds
 
 # Randomly select indices for the 5 different folds 
 folds <- split(sample(nrow(X), nrow(X), replace=FALSE), as.factor(1:k)) 
+
 # To store the mean square prediction error
 mspe.nbp <- rep(NA, k)
 

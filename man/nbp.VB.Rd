@@ -95,7 +95,7 @@ y <- crossprod(t(X), beta.true) + rnorm(n)
 ################################
 nbp.model <- nbp.VB(X=X, y=y, method.hyperparameters="mml", selection="dss")
 
-nbp.model$beta.hat     # posterior median estimates
+nbp.model$beta.hat     # posterior mean estimates
 nbp.model$beta.var     # posterior variance estimates
 nbp.model$nbp.classifications    # Variables selected
 

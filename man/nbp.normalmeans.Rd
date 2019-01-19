@@ -36,13 +36,13 @@ nbp.normalmeans(x, a.est=c("fixed", "est.sparsity", "reml", "uniform",
 }
 
 \details{
-The function implements sparse estimation and multiple hypothesis testing on a multivariate normal mean vector, \eqn{\theta = (\theta_1, \ldots, \theta_n)} with the NBP prior of Bai and Ghosh (2018). The full model is:
+The function implements sparse estimation and multiple hypothesis testing on a multivariate normal mean vector, \eqn{\theta = (\theta_1, \ldots, \theta_n)} with the NBP prior of Bai and Ghosh (2019). The full model is:
 
 \deqn{X | \theta \sim N_n( \theta, \sigma^2 I_n),}
 \deqn{\theta_i | \omega_i^2 \sim N(0, \sigma^2 \omega_i^2), i = 1, \ldots, n,}
 \deqn{\omega_i^2 \sim \beta'(a,b), i = 1, \ldots, n,}
 
-where \eqn{a} is the main parameter that controls the sparsity of the solution. The sparsity parameter \eqn{a}  It can be estimated by: the empirical Bayes estimate of the estimated sparsity (\code{"est.sparsity"}) given in van der Pas et al. (2014), restricted marginal maximum likelihood in the interval \eqn{[1/n, 1]} (\code{"reml"}), a uniform prior \eqn{a \sim U(1/n, 1)} (\code{"uniform"}), or by a standard Cauchy prior truncated to \eqn{[1/n, 1]} (\code{"truncatedCauchy"}).
+where \eqn{a} is the main parameter that controls the sparsity of the solution. The sparsity parameter \eqn{a} can be estimated by: the empirical Bayes estimate of the estimated sparsity (\code{"est.sparsity"}) given in van der Pas et al. (2014), restricted marginal maximum likelihood in the interval \eqn{[1/n, 1]} (\code{"reml"}), a uniform prior \eqn{a \sim U(1/n, 1)} (\code{"uniform"}), or by a standard Cauchy prior truncated to \eqn{[1/n, 1]} (\code{"truncatedCauchy"}).
 
 The posterior mean is of the form \eqn{[E(1-\kappa_i | X_1, \ldots, X_n)] X_i, i = 1, \ldots, n}. The "threshold" method for variable selection is to classify \eqn{\theta_i} as signal (\eqn{\theta_i \neq 0}) if \eqn{E(1 - \kappa_i | X_1, \ldots, X_n) > 1/2}.
 
@@ -71,12 +71,10 @@ Ray Bai and Malay Ghosh
 }
 
 \examples{
-
-##################################################
-# Example on synthetic data.                     # 
-# 5 percent of entries in a sparse vector theta  #
-# are set equal to signal value A = 7.           #
-##################################################
+###################################################
+# Example on synthetic data.                      # 
+# 5 percent of entries in theta are set to A = 7. #
+###################################################
 n <- 40
 sparsity.level <- 5    # 5 percent of entries will be nonzero
 A <- 5

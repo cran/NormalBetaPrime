@@ -72,11 +72,8 @@ Ray Bai and Malay Ghosh
 
 \examples{
 ###################################################
-###################################################
-## Example on synthetic data.                    ## 
-## 5 percent of entries in a sparse vector theta ##
-## are set equal to signal value A =7.           ##
-###################################################
+# Example on synthetic data.                      # 
+# 5 percent of entries in theta are set to A = 7. #
 ###################################################
 n <- 100
 sparsity.level <- 5
@@ -94,6 +91,7 @@ signal.indices <- sample(1:n, size=q, replace=FALSE)
 ###################
 theta.true[signal.indices] <- A
 X <- theta.true + rnorm(n,0,1)
+
 
 #########################
 # Run the DL model on X #

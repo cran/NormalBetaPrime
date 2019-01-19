@@ -1,4 +1,4 @@
-3efdc328f55b9d3169bbca45b180b92e *DESCRIPTION
+8306939a816ed3536334ad9415aa4a94 *DESCRIPTION
 0a84abf881692339814af4a19ecdcecd *NAMESPACE
 20ea12ebb968a2a877505cd2ee8821f1 *R/Helper_functions.R
 04de64bbcbf9f8e2d3cdd5dc7ca0cd94 *R/dl.normalmeans.R
@@ -11,12 +11,12 @@ dfd8ebe17be19943e5e1d59e93b279c5 *R/nbp.normalmeans.R
 274cdf94489ad656ac1189b20c81ae41 *data/eyedata.rda
 7e3e873fad5f02d8e2969667d7c77f23 *data/singh2002.RData
 336de50285ebd3b9fdb1d6cbfdf26584 *man/diabetes.Rd
-387a8db90c7c87fb2dee30f7aab695f4 *man/dl.normalmeans.Rd
+5ebace9ef1d8d54ecfa4b3fb8bf73c31 *man/dl.normalmeans.Rd
 4a76abf67c1d13a0b12b87b8d97d3e98 *man/eyedata.Rd
 e917285674397e4aee12fb23d2e4d962 *man/genes.Rd
-677ee428912e9a44a51dba0439e7491d *man/hsplus.normalmeans.Rd
-24eb40cf74edec2bf75d7cdec41b0bcc *man/nbp.Rd
-91c99d8e267b5cf1365589bfffd6cef1 *man/nbp.VB.Rd
-73c1e50e22864ae5bee020b81d4fee25 *man/nbp.normalmeans.Rd
+d18f76aee300eab0b6f755759b286372 *man/hsplus.normalmeans.Rd
+cbe04edc9b3a4914759c7f1427f74b73 *man/nbp.Rd
+87dfe227d680be17bd0ba0cdd49da2f1 *man/nbp.VB.Rd
+9247d5d387531694a414a6c2760ff7d8 *man/nbp.normalmeans.Rd
 302d859de29ead76bdd5c1658b803b0e *man/singh2002.Rd
 8c81f4a8f68d828b3608d954058c2d3d *man/trim32.Rd

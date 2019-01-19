@@ -73,14 +73,12 @@ Ray Bai and Malay Ghosh
 
 \examples{
 ###################################################
-## Example on synthetic data.                    ## 
-## 5 percent of entries in a sparse vector theta ##
-## are set equal to signal value A =7.           ##
+# Example on synthetic data.                      # 
+# 5 percent of entries in a theta are set to A=7. #
 ###################################################
 n <- 100
 sparsity.level <- 5
 A <- 7
-
 # Initialize theta vector of all zeros
 theta.true <- rep(0,n)
 # Set (sparsity.level) percent of them to be A
